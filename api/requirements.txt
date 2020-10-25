@@ -1,0 +1,6 @@
+Flask
+Redis
+uWSGI==2.0.18
+# Flask-Restful
+# flask-cors
+# sqlalchemy pymysql flask-cors uwsgi
