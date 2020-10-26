@@ -1,6 +1,8 @@
-Flask
-Redis
 uWSGI==2.0.18
-# Flask-Restful
-# flask-cors
-# sqlalchemy pymysql flask-cors uwsgi
+Flask==1.1.2
+Flask-RESTful==0.3.7
+Flask-Cors==3.0.8
+Jinja2==2.10.1
+MarkupSafe==1.1.1
+Werkzeug==0.16.0
+Redis
