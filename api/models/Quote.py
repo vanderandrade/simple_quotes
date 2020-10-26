@@ -2,7 +2,7 @@ from flask import request
 from flask_restful import Resource
 from redis import Redis
 
-redis = Redis(host='redis', port=6379)
+redis = Redis(host='redis', port=6379, decode_responses=True)
 
 class Quote(Resource):
     """ The quotes View """
@@ -14,7 +14,7 @@ class Quote(Resource):
         print(f"Quotes has been viewed {redis.get('get_quote')} time(s).")
 
         quote = redis.hgetall(self._QUOTE_KEY)
-        quotes = [self._clean_quote_object(quote)] if quote else []
+        quotes = [quote] if quote else []
 
         return { 'quotes': quotes }
 
@@ -46,11 +46,3 @@ class Quote(Resource):
 
     def _create_quote_object(self, id, quote, quoted_by, added_by):
         return {'id': id, 'quote': quote, 'quote_by': quoted_by, 'added_by': added_by}
-
-    def _clean_quote_object(self, quote):
-        cleaned_quote={}
-
-        for k,v in quote.items():
-            if not isinstance(k,int):
-                cleaned_quote[k.decode()] = v.decode()
-        return cleaned_quote
