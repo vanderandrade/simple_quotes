@@ -14,8 +14,7 @@ class Quote(Resource):
         print(f"Quotes has been viewed {redis.get('get_quote')} time(s).")
 
         quote = redis.hgetall(self._QUOTE_KEY)
-        if quote:
-            quotes = [self._clean_quote_object(quote)]
+        quotes = [self._clean_quote_object(quote)] if quote else []
 
         return { 'quotes': quotes }
 
