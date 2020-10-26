@@ -11,6 +11,14 @@
           </div>
 
           <div>
+            <input type="text" placeholder="Quote by" v-model="quote.quote_by" required />
+          </div>
+
+          <div>
+            <input type="text" placeholder="Posted By" v-model="quote.added_by" required />
+          </div>
+
+          <div>
             <button type="submit">Save</button>
           </div>
         </form>

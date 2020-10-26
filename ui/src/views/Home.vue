@@ -6,7 +6,10 @@
       <div class="quote" v-for="quote in quotes" :key="quote.id" :quote="quote">
         <p>
           <em>"{{quote.quote}}"</em>
+          by {{quote.quote_by}}
         </p>
+
+        <span class="added-by">added by {{quote.added_by}}</span>
       </div>
     </div>
   </div>
