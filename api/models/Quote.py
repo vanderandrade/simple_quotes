@@ -13,10 +13,11 @@ class Quote(Resource):
         redis.incr('get_quote')
         print(f"Quotes has been viewed {redis.get('get_quote')} time(s).")
 
-        quote = redis.hgetall(self._QUOTE_KEY)
-        quotes = [quote] if quote else []
+        quotes=[]
+        for id in redis.lrange(self._QUOTE_KEY, 0, -1 ):
+            quotes.append(redis.hgetall(id))
 
-        return { 'quotes': quotes }
+        return {'quotes': quotes}
 
     def post(self):
         """
@@ -24,7 +25,8 @@ class Quote(Resource):
         Expect a JSON payload with the following format
         {
             "quote": "The quote",
-            "quote_by": "The person who said the quote"
+            "quote_by": "The person who said the quote",
+            "added_by": "The person who is posting the quote"
         }
         """
         data = request.get_json()
@@ -35,7 +37,8 @@ class Quote(Resource):
                 id=redis.get('post_quote')
 
                 quote = self._create_quote_object(id, data['quote'], data['quote_by'], data['added_by'])
-                redis.hmset(self._QUOTE_KEY, quote)
+                redis.hmset(id, quote)
+                redis.lpush(self._QUOTE_KEY, id)
 
                 return True
 
