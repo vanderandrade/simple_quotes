@@ -8,7 +8,7 @@ class Quote(Resource):
     """ The quotes View """
     _QUOTE_KEY='quote'
     _GET_QUOTE='get_quote'
-    _SET_QUOTE='post_quote'
+    _POST_QUOTE='post_quote'
 
     def get(self):
         """ Returns a list of quotes """
