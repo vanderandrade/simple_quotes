@@ -21,6 +21,26 @@ class Quote(Resource):
 
         return {'quotes': quotes}
 
+    def delete(self):
+        """
+        Remove quote from redis
+        Expect a JSON payload with the following format
+        {
+            "quote_id": "The id of quote to be removed"
+        }
+        """
+        data = request.get_json()
+
+        try:
+            if 'quote_id' in data:
+                redis.lrem(self._QUOTE_KEY, 0, int(data['quote_id']))
+                redis.delete(data['quote_id'])
+
+                return True
+            return False
+        except:
+            return False
+
     def post(self):
         """
         Add a quote to redis
