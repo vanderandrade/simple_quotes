@@ -1,9 +1,12 @@
 <template>
   <div class="home">
-    <button @click="$router.push('/new')">Add Quote</button>
+    <button class="add-button" @click="$router.push('/new')">Add Quote</button>
     <hr />
     <div class="container">
       <div class="quote" v-for="quote in quotes" :key="quote.id" :quote="quote">
+        <button type="button" class="delete-button" aria-label="Close" v-on:click="deleteQuote(quote.id)">
+          <span aria-hidden="true">×</span>
+        </button>
         <p>
           <em>"{{quote.quote}}"</em>
           by {{quote.quote_by}}
@@ -30,7 +33,30 @@ export default {
       .catch(e => {
         console.error(e.message);
       });
-  }
+  },
+  methods: {
+      deleteQuote (quoteId) {
+        fetch("http://localhost:8000", {
+          method: "DELETE",
+          headers: {
+            "Content-type": "application/json"
+          },
+          body: JSON.stringify({"quote_id": quoteId})
+        })
+          .then(res => res.json())
+          .then(response => {
+            if (response) {
+              alert("Quote deleted successfully");
+              this.$router.go();
+            } else {
+              alert("Oops! We could not delete your quote");
+            }
+          })
+          .catch(e => {
+            console.error(e.message);
+          });
+        }
+    }
 };
 </script>
 
@@ -40,7 +66,7 @@ export default {
   width: 100%;
 }
 
-button {
+.add-button {
   cursor: pointer;
   border: 1px solid steelblue;
   border-radius: 5px;
@@ -49,9 +75,19 @@ button {
   height: 2em;
 }
 
-button:hover {
+.add-button:hover {
   background: steelblue;
   color: white;
+}
+
+.delete-button {
+  cursor: pointer;
+  border: 0px;
+  border-radius: 2px;
+  background: transparent;
+  color: grey;
+  height: 2em;
+  float: right;
 }
 
 .container {
