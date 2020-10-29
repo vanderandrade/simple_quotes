@@ -1,23 +1,14 @@
 from flask import request
 from flask_restful import Resource
-from redis import Redis
-
-redis = Redis(host='redis', port=6379, decode_responses=True)
+from repository.Quote.QuoteRepository import QuoteRedisRepository
 
 class Quote(Resource):
     """ The quotes View """
-    _QUOTE_KEY='quote'
-    _GET_QUOTE='get_quote'
-    _POST_QUOTE='post_quote'
+    _repository = QuoteRedisRepository()
 
     def get(self):
         """ Returns a list of quotes """
-        redis.incr(self._GET_QUOTE)
-        print(f"Quotes has been viewed {redis.get(self._GET_QUOTE)} time(s).")
-
-        quotes=[]
-        for id in redis.lrange(self._QUOTE_KEY, 0, -1 ):
-            quotes.append(redis.hgetall(id))
+        quotes = self._repository.get_all()
 
         return {'quotes': quotes}
 
@@ -33,8 +24,7 @@ class Quote(Resource):
 
         try:
             if 'quote_id' in data:
-                redis.lrem(self._QUOTE_KEY, 0, int(data['quote_id']))
-                redis.delete(data['quote_id'])
+                self._repository.delete(data['quote_id'])
 
                 return True
             return False
@@ -55,19 +45,15 @@ class Quote(Resource):
 
         try:
             if 'quote' in data and 'quote_by' in data and 'added_by' in data:
-                redis.incr(self._POST_QUOTE)
-                id=redis.get(self._POST_QUOTE)
-
-                quote = self._create_quote_object(id, data['quote'], data['quote_by'], data['added_by'])
-                redis.hmset(id, quote)
-                redis.lpush(self._QUOTE_KEY, id)
+                quote = self._create_quote_object(data['quote'], data['quote_by'], data['added_by'])
+                self._repository.add(quote)
 
                 return True
-
-            return False
         except:
-            return False
+            pass
+
+        return False
 
 
-    def _create_quote_object(self, id, quote, quoted_by, added_by):
+    def _create_quote_object(self, quote, added_by,quoted_by=None, id=None):
         return {'id': id, 'quote': quote, 'quote_by': quoted_by, 'added_by': added_by}
