@@ -83,11 +83,19 @@ export default {
 .delete-button {
   cursor: pointer;
   border: 0px;
-  border-radius: 2px;
+  width: 32px; 
+  height: 32px;
   background: transparent;
   color: grey;
   height: 2em;
   float: right;
+  border-radius: 50%;
+  transition: .1s;
+}
+
+.delete-button:hover {
+  background-color: rgb(228, 225, 225);
+  color: black;
 }
 
 .container {
