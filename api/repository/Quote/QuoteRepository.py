@@ -29,7 +29,11 @@ class QuoteRedisRepository(AbstractRepository):
             return False
 
     def get(self, reference):
-        raise NotImplementedError
+        quote = redis.hgetall(reference)
+
+        if quote:
+            return quote
+        return None
 
     def get_all(self):
         quotes=[]
