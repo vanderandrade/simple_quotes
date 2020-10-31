@@ -9,7 +9,7 @@
         </button>
         <p>
           <em>"{{quote.quote}}"</em>
-          by {{quote.quote_by}}
+           {{quote.quote_by != undefined ? 'by ' + quote.quote_by : ''}}
         </p>
 
         <span class="added-by">added by {{quote.added_by}}</span>

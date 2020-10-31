@@ -11,7 +11,7 @@
           </div>
 
           <div>
-            <input type="text" placeholder="Quote by" v-model="quote.quote_by" required />
+            <input type="text" placeholder="Quote by" v-model="quote.quote_by" />
           </div>
 
           <div>
