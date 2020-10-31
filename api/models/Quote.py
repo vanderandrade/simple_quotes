@@ -44,8 +44,12 @@ class Quote(Resource):
         data = request.get_json()
 
         try:
-            if 'quote' in data and 'quote_by' in data and 'added_by' in data:
-                quote = self._create_quote_object(data['quote'], data['quote_by'], data['added_by'])
+            if 'quote' in data and 'added_by' in data:
+                quote = self._create_quote_object(
+                    data['quote'],
+                    data['added_by'],
+                    data['quote_by'] if 'quote_by' in data and data['quote_by'] else None
+                )
                 self._repository.add(quote)
 
                 return True
@@ -55,5 +59,5 @@ class Quote(Resource):
         return False
 
 
-    def _create_quote_object(self, quote, added_by,quoted_by=None, id=None):
+    def _create_quote_object(self, quote, added_by, quoted_by=None, id=None):
         return {'id': id, 'quote': quote, 'quote_by': quoted_by, 'added_by': added_by}
