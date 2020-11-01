@@ -11,7 +11,7 @@
           </div>
 
           <div>
-            <input type="text" placeholder="Quote by" v-model="quote.quote_by" />
+            <input type="text" placeholder="Quote by (optional)" v-model="quote.quote_by" />
           </div>
 
           <div>
@@ -97,5 +97,9 @@ textarea,
 input {
   width: 100%;
   font-size: 1em;
+}
+
+input:optional {
+  color: rgba(116, 116, 109, 0.578);
 }
 </style>
