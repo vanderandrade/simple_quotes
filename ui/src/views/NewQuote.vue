@@ -99,7 +99,10 @@ input {
   font-size: 1em;
 }
 
-input:optional {
+input:optional::placeholder {
+  color: rgba(116, 116, 109, 0.578);
+}
+input:optional::-webkit-input-placeholder {
   color: rgba(116, 116, 109, 0.578);
 }
 </style>
