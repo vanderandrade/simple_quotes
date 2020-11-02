@@ -47,7 +47,6 @@ export default {
         .then(res => res.json())
         .then(response => {
           if (response) {
-            alert("Quote added successfully");
             this.$router.push("/");
           } else {
             alert("Oops! We could not add your quote");
