@@ -46,10 +46,10 @@ export default {
           .then(res => res.json())
           .then(response => {
             if (response) {
-              alert("Quote deleted successfully");
+              this.$toast("Quote deleted successfully");
               this.$router.go();
             } else {
-              alert("Oops! We could not delete your quote");
+              this.$toast("Oops! We could not delete your quote");
             }
           })
           .catch(e => {

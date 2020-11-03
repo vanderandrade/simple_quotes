@@ -49,7 +49,7 @@ export default {
           if (response) {
             this.$router.push("/");
           } else {
-            alert("Oops! We could not add your quote");
+            this.$toast("Oops! We could not add your quote");
           }
         })
         .catch(e => {
