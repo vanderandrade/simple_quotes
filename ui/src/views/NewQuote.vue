@@ -47,6 +47,7 @@ export default {
         .then(res => res.json())
         .then(response => {
           if (response) {
+            this.$toast("Added quote!", {duration: 3000});
             this.$router.push("/");
           } else {
             this.$toast("Oops! We could not add your quote");
