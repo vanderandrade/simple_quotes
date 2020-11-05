@@ -25,16 +25,20 @@ export default {
     quotes: []
   }),
   created() {
-    fetch("http://localhost:8000")
-      .then(res => res.json())
-      .then(response => {
-        this.quotes = response.quotes;
-      })
-      .catch(e => {
-        console.error(e.message);
-      });
+    this.atCreation()
   },
   methods: {
+      atCreation() {
+        fetch("http://localhost:8000")
+        .then(res => res.json())
+        .then(response => {
+          this.quotes = response.quotes;
+        })
+        .catch(e => {
+          console.error(e.message);
+        });
+      },
+
       deleteQuote (quoteId) {
         fetch("http://localhost:8000", {
           method: "DELETE",
@@ -43,19 +47,20 @@ export default {
           },
           body: JSON.stringify({"quote_id": quoteId})
         })
-          .then(res => res.json())
-          .then(response => {
-            if (response) {
-              this.$toast("Quote deleted successfully");
-              this.$router.go();
-            } else {
-              this.$toast("Oops! We could not delete your quote");
-            }
-          })
-          .catch(e => {
-            console.error(e.message);
-          });
-        }
+        .then(res => res.json())
+        .then(response => {
+          if (response) {
+            this.$root.$toast("Quote deleted successfully!", {duration: 3000});
+            this.atCreation();
+            this.created();
+          } else {
+            this.$root.$toast("Oops! We could not delete your quote", {duration: 3000});
+          }
+        })
+        .catch(e => {
+          console.error(e.message);
+        });
+      }
     }
 };
 </script>
