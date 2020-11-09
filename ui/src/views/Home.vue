@@ -116,6 +116,7 @@ export default {
   border-radius: 10px;
   border: 1px solid steelblue;
   color: black;
+  box-shadow: 5px 5px 2px steelblue;
 }
 
 .quote span.by {
