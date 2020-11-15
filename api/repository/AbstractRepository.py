@@ -15,5 +15,13 @@ class AbstractRepository(abc.ABC):
         raise NotImplementedError
 
     @abc.abstractmethod
+    def get_all_quotes(self):
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def get_all_quoters(self):
+        raise NotImplementedError
+
+    @abc.abstractmethod
     def delete(self, reference):
         raise NotImplementedError
