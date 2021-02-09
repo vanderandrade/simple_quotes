@@ -7,18 +7,25 @@ class Quote(Resource):
     _repository = QuoteRedisRepository()
 
     def get(self):
-        """ Returns a list of quotes """
+        """ 
+            Returns a list of quotes
+        """
         quotes = self._repository.get_all()
 
+        quoters = self._repository.get_all_quoters()
+        print(quoters)
+
+        quoterss = self._repository.get_all_quotes()
+        print(quoterss)
         return {'quotes': quotes}
 
     def delete(self):
         """
-        Remove quote from redis
-        Expect a JSON payload with the following format
-        {
-            "quote_id": "The id of quote to be removed"
-        }
+            Remove quote from redis
+            Expect a JSON payload with the following format
+            {
+                "quote_id": "The id of quote to be removed"
+            }
         """
         data = request.get_json()
 
@@ -33,13 +40,13 @@ class Quote(Resource):
 
     def post(self):
         """
-        Add a quote to redis
-        Expect a JSON payload with the following format
-        {
-            "quote": "The quote",
-            "quote_by": "The person who said the quote",
-            "added_by": "The person who is posting the quote"
-        }
+            Add a quote to redis
+            Expect a JSON payload with the following format
+            {
+                "quote": "The quote",
+                "quote_by": "The person who said the quote",
+                "added_by": "The person who is posting the quote"
+            }
         """
         data = request.get_json()
 
