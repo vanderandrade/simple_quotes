@@ -17,6 +17,18 @@ services:
     redis:
         image: redis
 
+    db:
+        image: postgres:11
+        environment:
+            POSTGRES_USER: postgres
+            POSTGRES_PASSWORD: postgres
+            PGDATA: /var/lib/postgresql/data/pgdata
+        restart: always
+        ports:
+            - "5432:5432"
+        volumes:
+            - ./data/:/var/lib/postgresql/data/:z
+
     ui:
         build: ./ui
         container_name: ui
