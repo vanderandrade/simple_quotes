@@ -12,4 +12,7 @@ if [[ -z `psql -Atqc "\\list $PGDATABASE"` ]]; then
   echo "Database $PGDATABASE created."
 fi
 
+echo "-- RUNNING SQL SCRIPTS --"
+psql -d $PGDATABASE -a -f sql/quote.sql -q
+
 uwsgi app.ini
