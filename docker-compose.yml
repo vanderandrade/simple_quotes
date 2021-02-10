@@ -1,19 +1,23 @@
-version: '3'
+version: '3.2'
 
 services:
     api:
         build: ./api
+        environment:
+            PGHOST: db
+            PGUSER: postgres
+            PGPASSWORD: postgres
+            PGDATABASE: postgres_db
+            PGPORT: 5432
         container_name: api
         restart: always
         volumes:
           - ./api/:/app
         depends_on:
           - db
+          - redis
         expose:
           - 9000
-        depends_on:
-          - redis
-
     redis:
         image: redis
 
@@ -28,14 +32,12 @@ services:
             - "5432:5432"
         volumes:
             - ./data/:/var/lib/postgresql/data/:z
-
-    ui:
+        ui:
         build: ./ui
         container_name: ui
         restart: always
         expose:
             - 80
-
     nginx:
         build: ./nginx
         container_name: nginx
