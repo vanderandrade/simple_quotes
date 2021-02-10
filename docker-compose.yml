@@ -42,6 +42,9 @@ services:
         build: ./nginx
         container_name: nginx
         restart: always
+        depends_on:
+          - api
+          - ui
         ports:
             - "8000:8000"
             - "8001:80"
