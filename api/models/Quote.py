@@ -1,6 +1,6 @@
 from flask import request
 from flask_restful import Resource
-from repository.Quote.QuoteRepository import QuoteRedisRepository
+from repository.Quote.QuoteRedisRepository import QuoteRedisRepository
 
 class Quote(Resource):
     """ The quotes View """
