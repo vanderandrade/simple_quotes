@@ -5,4 +5,5 @@ Flask-Cors==3.0.8
 Jinja2==2.10.1
 MarkupSafe==1.1.1
 Werkzeug==0.16.0
-Redis
+redis==3.5.3
+psycopg2==2.8.6
