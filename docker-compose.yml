@@ -18,6 +18,7 @@ services:
           - redis
         expose:
           - 9000
+
     redis:
         image: redis
 
@@ -32,12 +33,14 @@ services:
             - "5432:5432"
         volumes:
             - ./data/:/var/lib/postgresql/data/:z
-        ui:
+
+    ui:
         build: ./ui
         container_name: ui
         restart: always
         expose:
             - 80
+
     nginx:
         build: ./nginx
         container_name: nginx
