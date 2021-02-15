@@ -1,16 +1,19 @@
 from flask import request
 from flask_restful import Resource
 from repository.Quote.QuoteRedisRepository import QuoteRedisRepository
+from repository.Quote.QuotePostgresRepository import QuotePostgresRepository
 
 class Quote(Resource):
     """ The quotes View """
-    _repository = QuoteRedisRepository()
+    # _repository = QuoteRedisRepository()
+    _repository = QuotePostgresRepository()
 
     def get(self):
         """ 
             Returns a list of quotes
         """
         quotes = self._repository.get_all()
+        print(quotes)
 
         quoters = self._repository.get_all_quoters()
         print(quoters)
