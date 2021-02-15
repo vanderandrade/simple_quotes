@@ -2,7 +2,7 @@ import json
 from flask import Flask
 from flask_cors import CORS
 from flask_restful import Api
-from models.Quote import Quote
+from apis.Quote import Quote
 
 app = Flask(__name__)
 CORS(app)
