@@ -16,11 +16,11 @@ class QuotePostgresRepository(AbstractRepository):
             cur = get_database_cursor(connection=con)
 
             if 'quote_by' in quote:
-                sql = f'INSERT INTO Quote(quote, quote_by, added_by) ' \
-                      f'VALUES({quote["quote"]}, {quote["quote_by"]}, {quote["added_by"]})'
+                sql = f"INSERT INTO Quote(quote, quote_by, added_by) " \
+                      f"VALUES ('{quote['quote']}', '{quote['quote_by']}', '{quote['added_by']}')"
             else:
-                sql = f'INSERT INTO Quote(quote, added_by) ' \
-                      f'VALUES({quote["quote"]}, {quote["added_by"]})'
+                sql = f"INSERT INTO Quote(quote, added_by) " \
+                      f"VALUES ('{quote['quote']}', '{quote['added_by']}')"
 
             cur.execute(sql)
             con.commit()
@@ -86,20 +86,39 @@ class QuotePostgresRepository(AbstractRepository):
             cur = get_database_cursor(connection=con)
 
             if action == QuoteAction.GET_ALL:
-                sql = f'SELECT * FROM Quote '
+                sql = f'SELECT id, quote, quote_by, added_by  FROM Quote '
+                labels = ['id', 'quote', 'quote_by', 'added_by']
             elif action == QuoteAction.GET_ALL_QUOTERS or \
                  action == QuoteAction.GET_ALL_QUOTES :
                 sql = f'SELECT {action.value} FROM Quote '
+                labels = [action.value]
             else:
-                sql = f'SELECT * FROM Quote '
+                sql = f'SELECT id, quote, quote_by, added_by FROM Quote '
+                labels = ['id', 'quote', 'quote_by', 'added_by']
 
-            result = cur.execute(sql)
+            cur.execute(sql)
+            quotes = cur.fetchall()
+
+            response = self._convert_to_response(quotes, labels)
 
             cur.close()
             con.close()
 
-            return result
+            return response
         except:
             pass
 
         return None
+
+    def _convert_to_response(self, values, labels):
+        response=[]
+
+        for v in values:
+            r={}
+            i=0
+            for label in labels:
+                r[label] = v[i]
+                i+=1
+            response.append(r)
+        
+        return response
