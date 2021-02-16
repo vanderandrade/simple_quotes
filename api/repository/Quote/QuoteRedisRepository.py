@@ -27,8 +27,8 @@ class QuoteRedisRepository(AbstractRepository):
             redis.lpush(self._QUOTE_KEY, id)
 
             return True
-        except:
-            pass
+        except Exception as e:
+            print(f'Error: {e}')
 
         return False
 
@@ -56,7 +56,8 @@ class QuoteRedisRepository(AbstractRepository):
             redis.delete(reference)
 
             return True
-        except:
+        except Exception as e:
+            print(f'Error: {e}')
             return False
 
 

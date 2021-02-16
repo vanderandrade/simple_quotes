@@ -29,8 +29,8 @@ class QuotePostgresRepository(AbstractRepository):
             con.close()
 
             return True
-        except:
-            pass
+        except Exception as e:
+            print(f'Error: {e}')
 
         return False
     
@@ -47,8 +47,8 @@ class QuotePostgresRepository(AbstractRepository):
             con.close()
 
             return result
-        except:
-            pass
+        except Exception as e:
+            print(f'Error: {e}')
 
         return None
 
@@ -75,8 +75,8 @@ class QuotePostgresRepository(AbstractRepository):
             con.close()
 
             return True
-        except:
-            pass
+        except Exception as e:
+            print(f'Error: {e}')
 
         return False
 
@@ -105,8 +105,8 @@ class QuotePostgresRepository(AbstractRepository):
             con.close()
 
             return response
-        except:
-            pass
+        except Exception as e:
+            print(f'Error: {e}')
 
         return None
 

@@ -35,11 +35,11 @@ class Quote(Resource):
         try:
             if 'quote_id' in data:
                 self._repository.delete(data['quote_id'])
-
                 return True
-            return False
         except:
-            return False
+            pass
+
+        return False
 
     def post(self):
         """
@@ -63,8 +63,8 @@ class Quote(Resource):
                 self._repository.add(quote)
 
                 return True
-        except:
-            pass
+        except Exception as e:
+            print(f'Error: {e}')
 
         return False
 
