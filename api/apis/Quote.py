@@ -12,15 +12,15 @@ class Quote(Resource):
         """ 
             Returns a list of quotes
         """
-        quotes = self._repository.get_all()
-        print(quotes)
+        data = request.get_json()
 
-        quoters = self._repository.get_all_quoters()
-        print(quoters)
+        if 'filter' in data:
+            if data['filter'] == 'quoters':
+                return {'quotes': self._repository.get_all_quoters()}
+            elif data['filter'] == 'quotes':
+                return {'quotes': self._repository.get_all_quotes()}
 
-        quoterss = self._repository.get_all_quotes()
-        print(quoterss)
-        return {'quotes': quotes}
+        return {'quotes': self._repository.get_all()}
 
     def delete(self):
         """
