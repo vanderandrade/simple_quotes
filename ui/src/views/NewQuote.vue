@@ -11,7 +11,7 @@
           </div>
 
           <div>
-            <input type="text" placeholder="Quote by (optional)" v-model="quote.quote_by" />
+            <v-autocomplete type="text" placeholder="Quote by (optional)" v-model="quote.quote_by"  @update-items="updateItems"/>
           </div>
 
           <div>
@@ -31,9 +31,34 @@
 export default {
   data: () => ({
     loading: false,
-    quote: {}
+    quote: {},
+    quoters: {}
   }),
   methods: {
+    atCreation() {
+        fetch("http://localhost:8000", {
+          method: "GET",
+          headers: {
+            "Content-type": "application/json"
+          },
+          body: JSON.stringify({"filter": "quoters"})
+        })
+        .then(res => res.json())
+        .then(response => {
+          this.quoters = response.quotes;
+        })
+        .catch(e => {
+          console.error(e.message);
+        });
+    },
+
+    getLabel(item) {
+      return item
+    },
+    updateItems(text) {
+      this.items = quoters
+    },
+
     submitQuote() {
       this.loading = false;
 

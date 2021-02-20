@@ -6,6 +6,7 @@ COPY package*.json ./
 RUN yarn
 COPY . .
 RUN yarn add vue-easy-toast
+RUN yarn add v-autocomplete
 RUN yarn run build
 
 # Production stage
