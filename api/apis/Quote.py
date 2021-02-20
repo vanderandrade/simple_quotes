@@ -14,11 +14,12 @@ class Quote(Resource):
         """
         data = request.get_json()
 
-        if 'filter' in data:
-            if data['filter'] == 'quoters':
-                return {'quotes': self._repository.get_all_quoters()}
-            elif data['filter'] == 'quotes':
-                return {'quotes': self._repository.get_all_quotes()}
+        if data is not None:
+            if 'filter' in data:
+                if data['filter'] == 'quoters':
+                    return {'quotes': self._repository.get_all_quoters()}
+                elif data['filter'] == 'quotes':
+                    return {'quotes': self._repository.get_all_quotes()}
 
         return {'quotes': self._repository.get_all()}
 
