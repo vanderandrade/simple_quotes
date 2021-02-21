@@ -85,13 +85,13 @@ class QuotePostgresRepository(AbstractRepository):
             con = get_database_connection()
             cur = get_database_cursor(connection=con)
 
+            labels=None
             if action == QuoteAction.GET_ALL:
                 sql = f'SELECT id, quote, quote_by, added_by  FROM Quote '
                 labels = ['id', 'quote', 'quote_by', 'added_by']
             elif action == QuoteAction.GET_ALL_QUOTERS or \
                  action == QuoteAction.GET_ALL_QUOTES :
                 sql = f'SELECT {action.value} FROM Quote '
-                labels = [action.value]
             else:
                 sql = f'SELECT id, quote, quote_by, added_by FROM Quote '
                 labels = ['id', 'quote', 'quote_by', 'added_by']
@@ -112,6 +112,9 @@ class QuotePostgresRepository(AbstractRepository):
 
     def _convert_to_response(self, values, labels):
         response=[]
+
+        if not labels:
+            return [v[0] for v in values]
 
         for v in values:
             r={}
