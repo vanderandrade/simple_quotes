@@ -2,6 +2,7 @@ from repository.AbstractRepository import AbstractRepository
 from storage import redis
 from utils.definitions import QuoteAction
 from utils.database import get_database_connection, get_database_cursor
+from models.model import db, Quote
 
 class QuotePostgresRepository(AbstractRepository):
     def add(self, quote):
@@ -12,21 +13,13 @@ class QuotePostgresRepository(AbstractRepository):
             raise ValueError
 
         try:
-            con = get_database_connection()
-            cur = get_database_cursor(connection=con)
-
-            if 'quote_by' in quote:
-                sql = f"INSERT INTO Quote(quote, quote_by, added_by) " \
-                      f"VALUES ('{quote['quote']}', '{quote['quote_by']}', '{quote['added_by']}')"
-            else:
-                sql = f"INSERT INTO Quote(quote, added_by) " \
-                      f"VALUES ('{quote['quote']}', '{quote['added_by']}')"
-
-            cur.execute(sql)
-            con.commit()
-
-            cur.close()
-            con.close()
+            quote = Quote(
+                quote=quote['quote'],
+                quote_by=quote['quote_by'],
+                added_by=quote['added_by'],
+            )
+            db.session.add(quote)
+            db.session.commit()
 
             return True
         except Exception as e:

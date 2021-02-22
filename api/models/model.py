@@ -1,15 +1,10 @@
-import sqlalchemy as db
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker, relationship
 import os
+from flask_sqlalchemy import SQLAlchemy
 
-Base = declarative_base()
-engine = db.create_engine(
-    f'postgresql://'
-    f'{os.environ[f"PGUSER"]}:'
-    f'{os.environ[f"PGPASSWORD"]}@'
-    f'{os.environ[f"PGHOST"]}:'
-    f'{os.environ[f"PGPORT"]}/'
-    f'{os.environ[f"PGDATABASE"]}')
-db_session = sessionmaker(engine)
-meta = db.MetaData()
+db = SQLAlchemy()
+
+class Quote(db.Model):
+    id = db.Column(db.BigInteger, primary_key=True)
+    quote = db.Column(db.String(100))
+    quote_by = db.Column(db.String(100), server_default='Unknown')
+    added_by = db.Column(db.String(100))
