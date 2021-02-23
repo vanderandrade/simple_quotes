@@ -15,6 +15,8 @@ class Quote(Resource):
         data = request.get_json()
 
         if data is not None:
+            if 'id' in data:
+                return {'quote': self._repository.get(data['id'])}
             if 'filter' in data:
                 if data['filter'] == 'quoters':
                     return {'quotes': self._repository.get_all_quoters()}
