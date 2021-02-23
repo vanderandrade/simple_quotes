@@ -29,20 +29,13 @@ class QuotePostgresRepository(AbstractRepository):
     
     def get(self, reference):
         try:
-            con = get_database_connection()
-            cur = get_database_cursor(connection=con)
+            quote = Quote.query.get(reference)
+            if quote:
+                quote = quote.__dict__
+                if '_sa_instance_state' in quote:
+                    del quote['_sa_instance_state']
 
-            sql = f'SELECT id, quote, quote_by, added_by FROM Quote WHERE id = {reference}'
-            labels = ['id', 'quote', 'quote_by', 'added_by']
-
-            cur.execute(sql)
-            quote = cur.fetchall()
-
-
-            cur.close()
-            con.close()
-
-            return  self._convert_to_response(quote, labels)
+            return  quote
         except Exception as e:
             print(f'Error: {e}')
 
