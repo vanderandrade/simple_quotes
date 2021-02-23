@@ -32,14 +32,17 @@ class QuotePostgresRepository(AbstractRepository):
             con = get_database_connection()
             cur = get_database_cursor(connection=con)
 
-            sql = f'SELECT * FROM Quote WHERE id = {reference}'
+            sql = f'SELECT id, quote, quote_by, added_by FROM Quote WHERE id = {reference}'
+            labels = ['id', 'quote', 'quote_by', 'added_by']
 
-            result = cur.execute(sql)
+            cur.execute(sql)
+            quote = cur.fetchall()
+
 
             cur.close()
             con.close()
 
-            return result
+            return  self._convert_to_response(quote, labels)
         except Exception as e:
             print(f'Error: {e}')
 
