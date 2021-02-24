@@ -28,18 +28,7 @@ class QuotePostgresRepository(AbstractRepository):
         return False
     
     def get(self, reference):
-        try:
-            quote = Quote.query.get(reference)
-            if quote:
-                quote = quote.__dict__
-                if '_sa_instance_state' in quote:
-                    del quote['_sa_instance_state']
-
-            return  quote
-        except Exception as e:
-            print(f'Error: {e}')
-
-        return None
+        return self._convert_to_response(Quote.query.get(reference))
 
     def get_all(self):
         return self._get_all(QuoteAction.GET_ALL)
@@ -71,46 +60,24 @@ class QuotePostgresRepository(AbstractRepository):
 
     def _get_all(self, action: QuoteAction):
         try:
-            con = get_database_connection()
-            cur = get_database_cursor(connection=con)
-
-            labels=None
             if action == QuoteAction.GET_ALL:
-                sql = f'SELECT id, quote, quote_by, added_by  FROM Quote '
-                labels = ['id', 'quote', 'quote_by', 'added_by']
+                quotes = db.session.query(Quote).all()
+                return [self._convert_to_response(q) for q in quotes]
             elif action == QuoteAction.GET_ALL_QUOTERS or \
                  action == QuoteAction.GET_ALL_QUOTES :
-                sql = f'SELECT {action.value} FROM Quote '
+                quotes = db.session.query(getattr(Quote, action.value)).all()
+                return [q[0] for q in quotes]
             else:
-                sql = f'SELECT id, quote, quote_by, added_by FROM Quote '
-                labels = ['id', 'quote', 'quote_by', 'added_by']
-
-            cur.execute(sql)
-            quotes = cur.fetchall()
-
-            response = self._convert_to_response(quotes, labels)
-
-            cur.close()
-            con.close()
-
-            return response
+                quotes = db.session.query(Quote).all()
+                return [self._convert_to_response(q) for q in quotes]
         except Exception as e:
             print(f'Error: {e}')
 
-        return None
 
-    def _convert_to_response(self, values, labels):
-        response=[]
-
-        if not labels:
-            return [v[0] for v in values]
-
-        for v in values:
-            r={}
-            i=0
-            for label in labels:
-                r[label] = v[i]
-                i+=1
-            response.append(r)
+    def _convert_to_response(self, quote):
+        if quote:
+            quote = quote.__dict__
+            if '_sa_instance_state' in quote:
+                del quote['_sa_instance_state']
         
-        return response
+        return quote
