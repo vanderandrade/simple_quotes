@@ -1,7 +1,5 @@
 from repository.AbstractRepository import AbstractRepository
-from storage import redis
 from utils.definitions import QuoteAction
-from utils.database import get_database_connection, get_database_cursor
 from models.model import db, Quote
 
 class QuotePostgresRepository(AbstractRepository):
