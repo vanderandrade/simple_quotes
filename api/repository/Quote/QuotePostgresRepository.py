@@ -41,16 +41,8 @@ class QuotePostgresRepository(AbstractRepository):
 
     def delete(self, reference):
         try:
-            con = get_database_connection()
-            cur = get_database_cursor(connection=con)
-
-            sql = f'DELETE FROM Quote WHERE id = {reference} '
-
-            cur.execute(sql)
-            con.commit()
-
-            cur.close()
-            con.close()
+            Quote.query.filter_by(id=reference).delete()
+            db.session.commit()
 
             return True
         except Exception as e:
