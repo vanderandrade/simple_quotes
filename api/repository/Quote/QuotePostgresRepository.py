@@ -51,7 +51,7 @@ class QuotePostgresRepository(AbstractRepository):
     def _get_all(self, action: QuoteAction):
         try:
             if action in (QuoteAction.GET_ALL_QUOTERS, QuoteAction.GET_ALL_QUOTES):
-                quotes = db.session.query(getattr(Quote, action.value)).all()
+                quotes = db.session.query(getattr(Quote, action.value)).distinct().all()
                 return [q[0] for q in quotes]
             else:
                 quotes = db.session.query(Quote).all()
