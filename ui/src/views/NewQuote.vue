@@ -10,17 +10,21 @@
             <textarea placeholder="Quote text" rows="10" v-model="quote.quote" required />
           </div>
 
-          <div>
+          <div class="autosuggest-container">
             <vue-autosuggest
-                :suggestions="[{data:['Frodo', 'Samwise', 'Gandalf', 'Galadriel', 'Faramir', 'Éowyn']}]"
-                :input-props="{id:'autosuggest__input', placeholder:'Do you feel lucky, punk?'}"
+                v-model="mid"
                 @input="onInputChange"
-                @selected="selectHandler"
+                @selected="onSelected"
                 @click="clickHandler"
-            >  
-              <template slot-scope="{suggestion}">
-                <span class="my-suggestion-item">{{getLabel(suggestion.item)}}</span>
-              </template>
+                @focus="focusMe"
+                :suggestions="filteredOptions"
+                :get-suggestion-value="getSuggestionValue"
+                :input-props="{id:'autosuggest__input', placeholder:'Quoter'}"
+            >
+              <div slot-scope="{suggestion}" style="display: flex; align-items: center;">
+                <!-- <img :style="{ display: 'flex', width: '25px', height: '25px', borderRadius: '15px', marginRight: '10px'}" :src="suggestion.item.avatar" /> -->
+                <div style="{ display: 'flex', color: 'navyblue'}">{{suggestion.item.name}}</div>
+              </div>
             </vue-autosuggest>
           </div>
 
@@ -46,8 +50,9 @@ export default {
   data: () => ({
     loading: false,
     quote: {},
+    quoter: '',
+    mid: '',
     item: {id: 9, name: 'Lion', description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit.'},
-    quoters: [{data:['Frodo', 'Samwise', 'Gandalf', 'Galadriel', 'Faramir', 'Éowyn']}],
     suggestions: [
         {
           data: [
@@ -62,13 +67,29 @@ export default {
   computed: {
     updateItems() {
       return this.suggestions;
+    },
+    filteredOptions() {
+      return [
+        { 
+          data: this.suggestions[0].data.filter(option => {
+            return option.name.toLowerCase().indexOf(this.mid.toLowerCase()) > -1;
+          })
+        }
+      ];
     }
   },
   methods: {
+    onSelected(item) {
+      console.log('onSelect: ' + item)
+      this.selected = item.item;
+      this.quoter = item;
+    },
     onInputChange(text) {
+      console.log('onInputChange: ' + text)
     },
     getSuggestionValue(suggestion) {
-      return suggestion;
+      console.log('getSuggestionValue: '+ suggestion)
+      return suggestion.item.name;
     },
     getLabel(item) {
       return item.name
@@ -76,6 +97,7 @@ export default {
 
     submitQuote() {
       this.loading = false;
+      this.quote['quote_by'] = this.quoter.item.name;
 
       fetch("http://localhost:8000", {
         method: "POST",
@@ -94,6 +116,13 @@ export default {
       .catch(e => {
         console.error(e.message);
       });
+    },
+
+    clickHandler(item) {
+      console.log('clickHandler: ' + item)
+    },
+    focusMe(e) {
+      console.log(e)
     }
   }
 };
