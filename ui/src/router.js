@@ -18,6 +18,5 @@ export default new Router({
             name: 'new-quote',
             component: NewQuote
         }
-
     ]
 })

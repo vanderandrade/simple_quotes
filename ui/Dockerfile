@@ -7,6 +7,7 @@ RUN yarn
 COPY . .
 RUN yarn add vue-easy-toast
 RUN yarn add v-autocomplete
+RUN yarn add vue-autosuggest
 RUN yarn run build
 
 # Production stage
