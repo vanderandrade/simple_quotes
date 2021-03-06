@@ -12,16 +12,14 @@ class Quote(Resource):
         """ 
             Returns a list of quotes
         """
-        data = request.get_json()
+        if 'id' in request.args:
+            return {'quote': self._repository.get(request.args['id'])}
 
-        if data is not None:
-            if 'id' in data:
-                return {'quote': self._repository.get(data['id'])}
-            if 'filter' in data:
-                if data['filter'] == 'quoters':
-                    return {'quotes': self._repository.get_all_quoters()}
-                elif data['filter'] == 'quotes':
-                    return {'quotes': self._repository.get_all_quotes()}
+        if 'filter' in request.args:
+            if request.args['filter'] == 'quoters':
+                return {'quotes': self._repository.get_all_quoters()}
+            elif request.args['filter'] == 'quotes':
+                return {'quotes': self._repository.get_all_quotes()}
 
         return {'quotes': self._repository.get_all()}
 
