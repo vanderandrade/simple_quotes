@@ -6,7 +6,6 @@ import Toast from 'vue-easy-toast'
 
 Vue.config.productionTip = false
 Vue.use(Toast);
-Vue.use(Autocomplete)
 
 new Vue({
   router,
