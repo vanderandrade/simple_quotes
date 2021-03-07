@@ -3,6 +3,7 @@ from flask import Flask
 from flask_cors import CORS
 from flask_restful import Api
 from apis.Quote import Quote
+from apis.Healthcheck import Healthcheck
 
 def create_app(app_name=__name__):
     app = Flask(app_name)
@@ -19,6 +20,7 @@ CORS(app)
 api = Api(app)
 
 
+api.add_resource(Healthcheck, '/')
 api.add_resource(Quote, '/quotes')
 if __name__ == "__main__":
     app.run()
