@@ -19,11 +19,11 @@
                 @focus="focusMe"
                 :suggestions="filteredOptions"
                 :get-suggestion-value="getSuggestionValue"
-                :input-props="{id:'autosuggest__input', placeholder:'Quoter'}"
+                :input-props="{id:'autosuggest__input', placeholder:'Quote by'}"
             >
               <div slot-scope="{suggestion}" style="display: flex; align-items: center;">
                 <!-- <img :style="{ display: 'flex', width: '25px', height: '25px', borderRadius: '15px', marginRight: '10px'}" :src="suggestion.item.avatar" /> -->
-                <div style="{ display: 'flex', color: 'navyblue'}">{{suggestion.item.name}}</div>
+                <div style="{ display: 'flex', color: 'navyblue'}">{{suggestion.item}}</div>
               </div>
             </vue-autosuggest>
           </div>
@@ -47,32 +47,24 @@ export default {
   components: {
     VueAutosuggest
   },
+  async created() {
+    const response = await fetch("http://localhost:8000/?filter=quoters", {method: "GET"});
+    const data = await response.json();
+    this.suggestions = data['quotes']
+  },
   data: () => ({
     loading: false,
     quote: {},
     quoter: '',
     mid: '',
-    item: {id: 9, name: 'Lion', description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit.'},
-    suggestions: [
-        {
-          data: [
-            { id: 1, name: "Frodo", race: "Hobbit", avatar: "https://upload.wikimedia.org/wikipedia/en/thumb/4/4e/Elijah_Wood_as_Frodo_Baggins.png/220px-Elijah_Wood_as_Frodo_Baggins.png" },
-            { id: 2, name: "Samwise", race: "Hobbit", avatar: "https://upload.wikimedia.org/wikipedia/en/thumb/7/7b/Sean_Astin_as_Samwise_Gamgee.png/200px-Sean_Astin_as_Samwise_Gamgee.png" },
-            { id: 3, name: "Gandalf", race: "Maia", avatar: "https://upload.wikimedia.org/wikipedia/en/thumb/e/e9/Gandalf600ppx.jpg/220px-Gandalf600ppx.jpg" },
-            { id: 4, name: "Aragorn", race: "Human", avatar: "https://upload.wikimedia.org/wikipedia/en/thumb/3/35/Aragorn300ppx.png/150px-Aragorn300ppx.png" }
-          ]
-        }
-      ]
+    suggestions: []
   }),
   computed: {
-    updateItems() {
-      return this.suggestions;
-    },
     filteredOptions() {
       return [
         { 
-          data: this.suggestions[0].data.filter(option => {
-            return option.name.toLowerCase().indexOf(this.mid.toLowerCase()) > -1;
+          data: this.suggestions.filter(option => {
+            return option.toLowerCase().indexOf(this.mid.toLowerCase()) > -1;
           })
         }
       ];
@@ -80,24 +72,21 @@ export default {
   },
   methods: {
     onSelected(item) {
-      console.log('onSelect: ' + item)
+      console.log('onSelect: ', item)
       this.selected = item.item;
       this.quoter = item;
     },
     onInputChange(text) {
-      console.log('onInputChange: ' + text)
+      console.log('onInputChange: ', text)
     },
     getSuggestionValue(suggestion) {
-      console.log('getSuggestionValue: '+ suggestion)
-      return suggestion.item.name;
-    },
-    getLabel(item) {
-      return item.name
+      console.log('getSuggestionValue: ', suggestion)
+      return suggestion.item;
     },
 
     submitQuote() {
       this.loading = false;
-      this.quote['quote_by'] = this.quoter.item.name;
+      this.quote['quote_by'] = this.quoter.item;
 
       fetch("http://localhost:8000", {
         method: "POST",
@@ -119,7 +108,7 @@ export default {
     },
 
     clickHandler(item) {
-      console.log('clickHandler: ' + item)
+      console.log('clickHandler: ', item)
     },
     focusMe(e) {
       console.log(e)
@@ -152,7 +141,10 @@ button:hover {
 
 .container {
   width: 60%;
-  margin: 15% 20% 20% 5%;
+  margin: 5%;
+  margin-top: 5%;
+  margin-left: auto;
+  margin-right: auto;
   border: 1px solid steelblue;
   padding: 2%;
 }
