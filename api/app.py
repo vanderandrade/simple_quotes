@@ -19,6 +19,6 @@ CORS(app)
 api = Api(app)
 
 
-api.add_resource(Quote, '/')
+api.add_resource(Quote, '/quotes')
 if __name__ == "__main__":
     app.run()

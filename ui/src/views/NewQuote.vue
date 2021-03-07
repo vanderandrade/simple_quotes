@@ -48,7 +48,7 @@ export default {
     VueAutosuggest
   },
   async created() {
-    const response = await fetch("http://localhost:8000/?filter=quoters", {method: "GET"});
+    const response = await fetch("http://localhost:8000/quotes?filter=quoters", {method: "GET"});
     const data = await response.json();
     this.suggestions = data['quotes']
   },
@@ -88,7 +88,7 @@ export default {
       this.loading = false;
       this.quote['quote_by'] = this.quoter.item;
 
-      fetch("http://localhost:8000", {
+      fetch("http://localhost:8000/quotes", {
         method: "POST",
         headers: {"Content-type": "application/json"},
         body: JSON.stringify(this.quote)

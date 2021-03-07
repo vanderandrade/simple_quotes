@@ -29,7 +29,7 @@ export default {
   },
   methods: {
       atCreation() {
-        fetch("http://localhost:8000")
+        fetch("http://localhost:8000/quotes")
         .then(res => res.json())
         .then(response => {
           this.quotes = response.quotes;
@@ -40,7 +40,7 @@ export default {
       },
 
       deleteQuote (quoteId) {
-        fetch("http://localhost:8000", {
+        fetch("http://localhost:8000/quotes", {
           method: "DELETE",
           headers: {
             "Content-type": "application/json"
