@@ -8,6 +8,7 @@ services:
             PGUSER: postgres
             PGPASSWORD: postgres
             PGDATABASE: postgres_db
+            PGDATABASETEST: postgres_test
             PGPORT: 5432
         container_name: api
         restart: always
