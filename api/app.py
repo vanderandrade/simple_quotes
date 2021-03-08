@@ -5,9 +5,13 @@ from flask_restful import Api
 from apis.Quote import Quote
 from apis.Healthcheck import Healthcheck
 
-def create_app(app_name=__name__):
+def create_app(app_name=__name__, environment='local'):
     app = Flask(app_name)
-    app.config.from_object('config.DeployConfig')
+
+    if environment == 'test':
+        app.config.from_object('config.TestConfig')
+    else:
+        app.config.from_object('config.DeployConfig')
 
     from models.model import db
     db.init_app(app)
