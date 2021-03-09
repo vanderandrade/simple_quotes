@@ -16,15 +16,15 @@ def create_app(app_name=__name__, environment='local'):
     from models.model import db
     db.init_app(app)
 
+    CORS(app)
+    api = Api(app)
+
+    api.add_resource(Healthcheck, '/')
+    api.add_resource(Quote, '/quotes')
+
     return app
 
-
 app = create_app()
-CORS(app)
-api = Api(app)
 
-
-api.add_resource(Healthcheck, '/')
-api.add_resource(Quote, '/quotes')
 if __name__ == "__main__":
     app.run()
