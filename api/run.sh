@@ -15,4 +15,11 @@ fi
 echo "-- RUNNING SQL SCRIPTS --"
 psql -d $PGDATABASE -a -f sql/quote.sql -q
 
+echo db init
+python manage.py db init
+echo db migrate
+python manage.py db migrate
+echo db upgrade
+python manage.py db upgrade
+
 uwsgi app.ini
