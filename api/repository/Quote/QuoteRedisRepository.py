@@ -1,11 +1,20 @@
 from repository.AbstractRepository import AbstractRepository
-from storage import redis
+from storage import redis, get_mock_redis
 from utils.definitions import QuoteAction
 
 class QuoteRedisRepository(AbstractRepository):
+    _redis=get_mock_redis()
+
     _QUOTE_KEY='quote'
     _ID_QUOTE='id_quote'
     _NULL_VALUE='NULL'
+
+    def __init__(self, **kwargs):
+        if 'environment' in kwargs and kwargs['environment'] == 'test':
+            self._redis = get_mock_redis()
+        else:
+            self._redis = redis
+
 
     def add(self, quote):
         if quote is None:
@@ -14,17 +23,20 @@ class QuoteRedisRepository(AbstractRepository):
         if 'quote' not in quote or 'added_by' not in quote:
             raise ValueError
 
+        if 'quote_by' not in quote or not quote['quote_by']:
+            quote['quote_by'] = 'Unknown'
+
         try:
             if 'id' in quote and quote['id'] != None:
                 id = quote['id']
             else:
-                redis.incr(self._ID_QUOTE)
-                id=redis.get(self._ID_QUOTE)
+                self._redis.incr(self._ID_QUOTE)
+                id=self._redis.get(self._ID_QUOTE)
                 quote['id'] = id
 
             quote = self._convert_quote_null_values(quote)
-            redis.hmset(id, quote)
-            redis.lpush(self._QUOTE_KEY, id)
+            self._redis.hmset(id, quote)
+            self._redis.lpush(self._QUOTE_KEY, id)
 
             return True
         except Exception as e:
@@ -33,7 +45,7 @@ class QuoteRedisRepository(AbstractRepository):
         return False
 
     def get(self, reference):
-        quote = redis.hgetall(reference)
+        quote = self._redis.hgetall(reference)
 
         if quote:
             quote = self._convert_quote_null_values(quote, to_null=True)
@@ -52,8 +64,8 @@ class QuoteRedisRepository(AbstractRepository):
 
     def delete(self, reference):
         try:
-            redis.lrem(self._QUOTE_KEY, 0, int(reference))
-            redis.delete(reference)
+            self._redis.lrem(self._QUOTE_KEY, 0, int(reference))
+            self._redis.delete(reference)
 
             return True
         except Exception as e:
@@ -63,12 +75,12 @@ class QuoteRedisRepository(AbstractRepository):
 
     def _get_all(self, action: QuoteAction):
         result=[]
-        for id in redis.lrange(self._QUOTE_KEY, 0, -1 ):
+        for id in self._redis.lrange(self._QUOTE_KEY, 0, -1 ):
             if action == QuoteAction.GET_ALL:
-                quote = self._convert_quote_null_values(redis.hgetall(id), to_null=True)
+                quote = self._convert_quote_null_values(self._redis.hgetall(id), to_null=True)
                 result.append(quote)
             else:
-                quote = self._convert_quote_null_values(redis.hget(id, action.value), to_null=True)
+                quote = self._convert_quote_null_values(self._redis.hget(id, action.value), to_null=True)
                 if quote not in result:
                     result.append(quote)
 

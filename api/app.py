@@ -21,7 +21,7 @@ def create_app(app_name=__name__, environment='local', storage='postgres'):
     CORS(app)
     api = Api(app)
 
-    quote_repository = QuotePostgresRepository() if storage == 'postgres' else QuoteRedisRepository()
+    quote_repository = QuotePostgresRepository() if storage == 'postgres' else QuoteRedisRepository(environment=environment)
 
     api.add_resource(Healthcheck, '/')
     api.add_resource(Quote, '/quotes', resource_class_kwargs={'repository': quote_repository})
