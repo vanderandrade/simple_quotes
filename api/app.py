@@ -4,8 +4,10 @@ from flask_cors import CORS
 from flask_restful import Api
 from apis.Quote import Quote
 from apis.Healthcheck import Healthcheck
+from repository.Quote.QuoteRedisRepository import QuoteRedisRepository
+from repository.Quote.QuotePostgresRepository import QuotePostgresRepository
 
-def create_app(app_name=__name__, environment='local'):
+def create_app(app_name=__name__, environment='local', storage='postgres'):
     app = Flask(app_name)
 
     if environment == 'test':
@@ -19,8 +21,10 @@ def create_app(app_name=__name__, environment='local'):
     CORS(app)
     api = Api(app)
 
+    quote_repository = QuotePostgresRepository() if storage == 'postgres' else QuoteRedisRepository()
+
     api.add_resource(Healthcheck, '/')
-    api.add_resource(Quote, '/quotes')
+    api.add_resource(Quote, '/quotes', resource_class_kwargs={'repository': quote_repository})
 
     return app
 

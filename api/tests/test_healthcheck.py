@@ -22,7 +22,7 @@ def app():
         db.drop_all()
 
 @pytest.mark.order1
-def test_empty_db(app):
+def test_healthcheck(app):
     r = app.test_client().get('/')
 
     assert r.status_code == 200
