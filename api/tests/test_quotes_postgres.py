@@ -63,9 +63,24 @@ def test_add_valid_quote_objects(app):
     assert r.json == True
 
 @pytest.mark.order2
-def test_get_quotes(app):
+def test_get_full_quotes(app):
     r = app.test_client().get('/quotes')
 
     assert r.status_code == 200
     assert {'quote': 'Lorem Ipsum', 'added_by': 'Lorem', 'quote_by': 'Ipsum', 'id': 1} in r.json['quotes']
     assert {'quote': 'Lorem Ipsum', 'added_by': 'Lorem', 'quote_by': 'Unknown', 'id': 2} in r.json['quotes']
+
+@pytest.mark.order2
+def test_get_quoters(app):
+    r = app.test_client().get('quotes', query_string={'filter': 'quoters'})
+
+    assert r.status_code == 200
+    assert ['Unknown', 'Ipsum'] == r.json['quotes']
+
+@pytest.mark.order2
+def test_get_quotes(app):
+    r = app.test_client().get('quotes', query_string={'filter': 'quotes'})
+    print(r.json)
+
+    assert r.status_code == 200
+    assert ['Lorem Ipsum'] == r.json['quotes']
