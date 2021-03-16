@@ -84,7 +84,10 @@ class QuoteRedisRepository(AbstractRepository):
                 if quote not in result:
                     result.append(quote)
 
-        return result
+        
+        if action == QuoteAction.GET_ALL and result:
+            return sorted(result, key=lambda k: k['id']) 
+        return sorted(result)
 
     def _convert_quote_null_values(self, quote, to_null=False):
         original_value= self._NULL_VALUE if to_null else None

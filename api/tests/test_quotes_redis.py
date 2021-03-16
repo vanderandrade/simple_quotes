@@ -71,6 +71,14 @@ def test_get_full_quotes(app):
     assert {'quote': 'Lorem Ipsum', 'added_by': 'Lorem', 'quote_by': 'Unknown', 'id': '2'} in r.json['quotes']
 
 @pytest.mark.order2
+def test_get_full_quotes_sorted(app):
+    r = app.test_client().get('/quotes', json={})
+
+    assert r.status_code == 200
+    assert {'quote': 'Lorem Ipsum', 'added_by': 'Lorem', 'quote_by': 'Ipsum', 'id': '1'} == r.json['quotes'][0]
+    assert {'quote': 'Lorem Ipsum', 'added_by': 'Lorem', 'quote_by': 'Unknown', 'id': '2'} == r.json['quotes'][1]
+
+@pytest.mark.order2
 def test_get_full_quotes_filtered_by_id(app):
     r = app.test_client().get('/quotes', query_string={'id': 1})
 
@@ -80,10 +88,10 @@ def test_get_full_quotes_filtered_by_id(app):
 @pytest.mark.order2
 def test_get_quoters(app):
     r = app.test_client().get('quotes', query_string={'filter': 'quoters'})
-    expected = ['Unknown', 'Ipsum']
+    expected = ['Ipsum', 'Unknown']
 
     assert r.status_code == 200
-    assert len(r.json['quotes']) == len(expected) and sorted(r.json['quotes']) == sorted(expected)
+    assert len(r.json['quotes']) == len(expected) and r.json['quotes'] == expected
 
 @pytest.mark.order2
 def test_get_quotes(app):
@@ -91,7 +99,7 @@ def test_get_quotes(app):
     expected = ['Lorem Ipsum']
 
     assert r.status_code == 200
-    assert len(r.json['quotes']) == len(expected) and sorted(r.json['quotes']) == sorted(expected)
+    assert len(r.json['quotes']) == len(expected) and r.json['quotes'] == expected
 
 @pytest.mark.order3
 def test_distinct_quoter(app):
@@ -102,7 +110,7 @@ def test_distinct_quoter(app):
     assert r.json == True
 
     r = app.test_client().get('quotes', query_string={'filter': 'quoters'})
-    expected = ['Unknown', 'Ipsum']
+    expected = ['Ipsum', 'Unknown']
 
     assert r.status_code == 200
-    assert len(r.json['quotes']) == len(expected) and sorted(r.json['quotes']) == sorted(expected)
+    assert len(r.json['quotes']) == len(expected) and r.json['quotes'] == expected

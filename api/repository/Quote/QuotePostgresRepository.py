@@ -51,10 +51,10 @@ class QuotePostgresRepository(AbstractRepository):
     def _get_all(self, action: QuoteAction):
         try:
             if action in (QuoteAction.GET_ALL_QUOTERS, QuoteAction.GET_ALL_QUOTES):
-                quotes = db.session.query(getattr(Quote, action.value)).distinct().all()
+                quotes = db.session.query(getattr(Quote, action.value)).distinct().order_by(getattr(Quote, action.value)).all()
                 return [q[0] for q in quotes]
             else:
-                quotes = db.session.query(Quote).all()
+                quotes = db.session.query(Quote).order_by(Quote.id).all()
                 return [self._convert_to_response(q) for q in quotes]
         except Exception as e:
             print(f'Error: {e}')
