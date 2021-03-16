@@ -71,6 +71,13 @@ def test_get_full_quotes(app):
     assert {'quote': 'Lorem Ipsum', 'added_by': 'Lorem', 'quote_by': 'Unknown', 'id': '2'} in r.json['quotes']
 
 @pytest.mark.order2
+def test_get_full_quotes_filtered_by_id(app):
+    r = app.test_client().get('/quotes', query_string={'id': 1})
+
+    assert r.status_code == 200
+    assert {'quote': 'Lorem Ipsum', 'added_by': 'Lorem', 'quote_by': 'Ipsum', 'id': '1'} == r.json['quote']
+
+@pytest.mark.order2
 def test_get_quoters(app):
     r = app.test_client().get('quotes', query_string={'filter': 'quoters'})
     expected = ['Unknown', 'Ipsum']
