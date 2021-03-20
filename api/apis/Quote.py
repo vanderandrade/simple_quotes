@@ -27,7 +27,7 @@ class Quote(Resource):
 
     def delete(self):
         """
-            Remove quote from redis
+            Remove stored quote
             Expect a JSON payload with the following format
             {
                 "quote_id": "The id of quote to be removed"
@@ -46,7 +46,7 @@ class Quote(Resource):
 
     def post(self):
         """
-            Add a quote to redis
+            Add quote in the storage
             Expect a JSON payload with the following format
             {
                 "quote": "The quote",
@@ -65,6 +65,31 @@ class Quote(Resource):
                 )
                 self._repository.add(quote)
 
+                return True
+        except Exception as e:
+            print(f'Error: {e}')
+
+        return False
+
+    def put(self):
+        '''
+            Update stored quote
+            Expect a JSON payload with the following format
+            {
+                "_id": "Quote id for identification",
+                "quote": "Updated quote",
+                "quote_by": "Updated quoter",
+            }
+        '''
+        data = request.get_json()
+
+        try:
+            unchangeable_columns=['added_by', 'id']
+            if any(elem in unchangeable_columns for elem in data):
+                raise Exception('Invalid fields send for update!')
+
+            if 'quote' in data or 'quote_by' in data:
+                self._repository.update(data)
                 return True
         except Exception as e:
             print(f'Error: {e}')

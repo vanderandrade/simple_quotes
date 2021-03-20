@@ -48,6 +48,21 @@ class QuotePostgresRepository(AbstractRepository):
 
         return False
 
+    def update(self, reference):
+        if '_id' not in reference:
+            raise ValueError('Impossible to search for the quote')
+
+        quote = Quote.query.get(reference['_id'])
+        if not quote:
+            return False
+
+        for k, v in reference.items():
+            setattr(quote, k, v)
+
+        db.session.commit()
+        return True
+
+
     def _get_all(self, action: QuoteAction):
         try:
             if action in (QuoteAction.GET_ALL_QUOTERS, QuoteAction.GET_ALL_QUOTES):
@@ -58,7 +73,6 @@ class QuotePostgresRepository(AbstractRepository):
                 return [self._convert_to_response(q) for q in quotes]
         except Exception as e:
             print(f'Error: {e}')
-
 
     def _convert_to_response(self, quote):
         if quote:
