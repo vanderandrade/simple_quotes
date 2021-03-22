@@ -5,10 +5,10 @@ from models.model import db, Quote
 class QuotePostgresRepository(AbstractRepository):
     def add(self, quote):
         if quote is None:
-            raise ValueError
+            raise ValueError('Impossible to add inexistent Quote object')
 
         if 'quote' not in quote or 'added_by' not in quote:
-            raise ValueError
+            raise ValueError('Required Quote properties are missing!')
 
         try:
             quote = Quote(
@@ -19,11 +19,11 @@ class QuotePostgresRepository(AbstractRepository):
             db.session.add(quote)
             db.session.commit()
 
-            return True
+            return True, 'OK'
         except Exception as e:
             print(f'Error: {e}')
 
-        return False
+        return False, 'Error when inserting Quote at storage'
     
     def get(self, reference):
         return self._convert_to_response(Quote.query.get(reference))
@@ -42,11 +42,11 @@ class QuotePostgresRepository(AbstractRepository):
             Quote.query.filter_by(id=reference).delete()
             db.session.commit()
 
-            return True
+            return True, 'OK'
         except Exception as e:
             print(f'Error: {e}')
 
-        return False
+        return False, 'Error when deleting Quote at storage'
 
     def update(self, reference):
         if '_id' not in reference:
@@ -54,13 +54,13 @@ class QuotePostgresRepository(AbstractRepository):
 
         quote = Quote.query.get(reference['_id'])
         if not quote:
-            return False
+            return False, 'Quote not found at storage'
 
         for k, v in reference.items():
             setattr(quote, k, v)
 
         db.session.commit()
-        return True
+        return True, 'OK'
 
 
     def _get_all(self, action: QuoteAction):
